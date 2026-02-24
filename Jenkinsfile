@@ -10,7 +10,7 @@ pipeline {
     stages {
 
         stage('Clone Code') {
-            agent { label 'master' }
+            agent { label 'Built-in node' }
             steps {
                 git branch: 'master',
                     url: 'https://github.com/Ajith-ak7353/Mearn-Stack-CI-CD.git'
@@ -18,7 +18,7 @@ pipeline {
         }
 
         stage('Build Docker Images') {
-            agent { label 'master' }
+            agent { label 'Built-in node' }
             steps {
                 script {
                     sh "docker build -t ${FRONTEND_IMAGE}:${IMAGE_TAG} ./frontend"
@@ -31,7 +31,7 @@ pipeline {
         }
 
         stage('Push Images to Docker Hub') {
-            agent { label 'master' }
+            agent { label 'Built-in node' }
             steps {
                 // This step should not normally be used in your script. Consult the inline help for details.
 withDockerRegistry(credentialsId: '9d20ed66-1fd5-4279-9693-344caa1db38a', url: 'https://index.docker.io/v1/') {
@@ -46,7 +46,7 @@ withDockerRegistry(credentialsId: '9d20ed66-1fd5-4279-9693-344caa1db38a', url: '
         }
 
         stage('Deploy on APK Server') {
-            agent { label 'apk' }
+            agent { label 'Apk' }
 
             steps {
                 sh """
