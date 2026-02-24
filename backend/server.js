@@ -1,37 +1,38 @@
 const express = require("express");
-//const cors = require("cors");
+const mongoose = require("mongoose");
+// const cors = require("cors");
 
 const app = express();
 
-// parse requests of content-type - application/json
+// Middleware
 app.use(express.json());
-
-// parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-const db = require("./app/models");
-db.mongoose
-  .connect(db.url, {
+// MongoDB Connection
+mongoose
+  .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
   .then(() => {
-    console.log("Connected to the database!");
+    console.log("✅ Successfully connected to MongoDB.");
   })
-  .catch(err => {
-    console.log("Cannot connect to the database!", err);
-    process.exit();
+  .catch((err) => {
+    console.error("❌ Cannot connect to the database!", err);
+    process.exit(1);
   });
 
-// simple route
+// Simple route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to Test application." });
 });
 
-require("./app/routes/turorial.routes")(app);
+// Routes
+require("./app/routes/tutorial.routes")(app);
 
-// set port, listen for requests
+// Set Port
 const PORT = process.env.PORT || 8080;
+
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+  console.log(`🚀 Server is running on port ${PORT}.`);
 });
