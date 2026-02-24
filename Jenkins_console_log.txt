@@ -1,0 +1,324 @@
+Started by user ajith
+Obtained Jenkinsfile from git https://github.com/Ajith-ak7353/Mearn-Stack-CI-CD.git
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/MERN-CI-CD_DD
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/MERN-CI-CD_DD/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/Ajith-ak7353/Mearn-Stack-CI-CD.git # timeout=10
+Fetching upstream changes from https://github.com/Ajith-ak7353/Mearn-Stack-CI-CD.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+ > git fetch --tags --force --progress -- https://github.com/Ajith-ak7353/Mearn-Stack-CI-CD.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+Checking out Revision fdfe36c411f527c789bcb574d21d4fc5522f1f81 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f fdfe36c411f527c789bcb574d21d4fc5522f1f81 # timeout=10
+Commit message: "update"
+ > git rev-list --no-walk 19abfb59c42e01cc79f4d8719abd7ce6f3de0379 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Clone Code)
+[Pipeline] git
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/MERN-CI-CD_DD/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/Ajith-ak7353/Mearn-Stack-CI-CD.git # timeout=10
+Fetching upstream changes from https://github.com/Ajith-ak7353/Mearn-Stack-CI-CD.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+ > git fetch --tags --force --progress -- https://github.com/Ajith-ak7353/Mearn-Stack-CI-CD.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+Checking out Revision fdfe36c411f527c789bcb574d21d4fc5522f1f81 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f fdfe36c411f527c789bcb574d21d4fc5522f1f81 # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git branch -D master # timeout=10
+ > git checkout -b master fdfe36c411f527c789bcb574d21d4fc5522f1f81 # timeout=10
+Commit message: "update"
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build Docker Images)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ docker build -t ajith7353/frontend:5 ./frontend
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  392.2kB
+Step 1/11 : FROM node:18 AS build
+ ---> b50082bc3670
+Step 2/11 : WORKDIR /app
+ ---> Using cache
+ ---> efec84289b88
+Step 3/11 : COPY package*.json ./
+ ---> Using cache
+ ---> e50c1d9aa5b6
+Step 4/11 : RUN npm install
+ ---> Using cache
+ ---> a2ab9c7feec0
+Step 5/11 : COPY . .
+ ---> Using cache
+ ---> f426ba8dd362
+Step 6/11 : RUN npm run build
+ ---> Using cache
+ ---> b29d5c00f701
+Step 7/11 : FROM nginx:alpine
+ ---> b76de378d572
+Step 8/11 : COPY nginx.conf /etc/nginx/conf.d/default.conf
+ ---> Using cache
+ ---> 1e352dfa26df
+Step 9/11 : COPY --from=build /app/dist/* /usr/share/nginx/html
+ ---> Using cache
+ ---> 5c8b0d0a9c3a
+Step 10/11 : EXPOSE 80
+ ---> Using cache
+ ---> c41a0ef547fb
+Step 11/11 : CMD ["nginx", "-g", "daemon off;"]
+ ---> Using cache
+ ---> 208aedfc6d14
+Successfully built 208aedfc6d14
+Successfully tagged ajith7353/frontend:5
+[Pipeline] sh
++ docker build -t ajith7353/backend:5 ./backend
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon   16.9kB
+Step 1/7 : FROM node:18
+ ---> b50082bc3670
+Step 2/7 : WORKDIR /app
+ ---> Using cache
+ ---> efec84289b88
+Step 3/7 : COPY package*.json ./
+ ---> Using cache
+ ---> aa4c45ca28c7
+Step 4/7 : RUN npm install
+ ---> Using cache
+ ---> 96ef9af8c472
+Step 5/7 : COPY . .
+ ---> Using cache
+ ---> 74d0956a3867
+Step 6/7 : EXPOSE 5000
+ ---> Using cache
+ ---> 4dc77240f60c
+Step 7/7 : CMD ["npm", "start"]
+ ---> Using cache
+ ---> 32a571dcf466
+Successfully built 32a571dcf466
+Successfully tagged ajith7353/backend:5
+[Pipeline] sh
++ docker tag ajith7353/frontend:5 ajith7353/frontend:latest
+[Pipeline] sh
++ docker tag ajith7353/backend:5 ajith7353/backend:latest
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Push Images to Docker Hub)
+[Pipeline] withDockerRegistry
+$ docker login -u ajith7353 -p ******** https://index.docker.io/v1/
+WARNING! Using --password via the CLI is insecure. Use --password-stdin.
+
+WARNING! Your credentials are stored unencrypted in '/var/lib/jenkins/workspace/MERN-CI-CD_DD@tmp/7248256a-30b8-41d0-b345-4e0b31d6e65e/config.json'.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/go/credential-store/
+
+Login Succeeded
+[Pipeline] {
+[Pipeline] sh
++ docker push ajith7353/frontend:5
+The push refers to repository [docker.io/ajith7353/frontend]
+7c1df8aa14ae: Preparing
+a9170122ed3a: Preparing
+da3ac26fdf0f: Preparing
+7b2903554e63: Preparing
+6c0e59fd138a: Preparing
+aa0fc249df10: Preparing
+f35bcec50d8c: Preparing
+660f9a93104f: Preparing
+53998a5033c3: Preparing
+989e799e6349: Preparing
+aa0fc249df10: Waiting
+f35bcec50d8c: Waiting
+660f9a93104f: Waiting
+53998a5033c3: Waiting
+989e799e6349: Waiting
+a9170122ed3a: Layer already exists
+7c1df8aa14ae: Layer already exists
+da3ac26fdf0f: Layer already exists
+7b2903554e63: Layer already exists
+6c0e59fd138a: Layer already exists
+aa0fc249df10: Layer already exists
+f35bcec50d8c: Layer already exists
+989e799e6349: Layer already exists
+53998a5033c3: Layer already exists
+660f9a93104f: Layer already exists
+5: digest: sha256:85263528fa6529c26f6096ea25ef8512cd0eb3a6a3f64a3f24ea885d35004566 size: 2406
+[Pipeline] sh
++ docker push ajith7353/backend:5
+The push refers to repository [docker.io/ajith7353/backend]
+ca4fc9433445: Preparing
+c11831678fb5: Preparing
+45f34b597556: Preparing
+d6bad028b4e2: Preparing
+d2a991bcab4d: Preparing
+b624aa2d5ea2: Preparing
+d399c9dc306f: Preparing
+84f9fa179c1b: Preparing
+ce84ba212e49: Preparing
+e4dc8cd9ecc8: Preparing
+6428cc293366: Preparing
+2f7436e79a0b: Preparing
+84f9fa179c1b: Waiting
+ce84ba212e49: Waiting
+e4dc8cd9ecc8: Waiting
+6428cc293366: Waiting
+2f7436e79a0b: Waiting
+b624aa2d5ea2: Waiting
+d399c9dc306f: Waiting
+45f34b597556: Layer already exists
+d6bad028b4e2: Layer already exists
+ca4fc9433445: Layer already exists
+c11831678fb5: Layer already exists
+d2a991bcab4d: Layer already exists
+d399c9dc306f: Layer already exists
+84f9fa179c1b: Layer already exists
+ce84ba212e49: Layer already exists
+e4dc8cd9ecc8: Layer already exists
+b624aa2d5ea2: Layer already exists
+2f7436e79a0b: Layer already exists
+6428cc293366: Layer already exists
+5: digest: sha256:39eb62dfd54e9a7a55f6adc1a8f8b064adcf9e7e278961947eb3a9e165ab1c99 size: 2837
+[Pipeline] sh
++ docker push ajith7353/frontend:latest
+The push refers to repository [docker.io/ajith7353/frontend]
+7c1df8aa14ae: Preparing
+a9170122ed3a: Preparing
+da3ac26fdf0f: Preparing
+7b2903554e63: Preparing
+6c0e59fd138a: Preparing
+aa0fc249df10: Preparing
+f35bcec50d8c: Preparing
+660f9a93104f: Preparing
+53998a5033c3: Preparing
+989e799e6349: Preparing
+660f9a93104f: Waiting
+53998a5033c3: Waiting
+989e799e6349: Waiting
+aa0fc249df10: Waiting
+f35bcec50d8c: Waiting
+7b2903554e63: Layer already exists
+6c0e59fd138a: Layer already exists
+7c1df8aa14ae: Layer already exists
+a9170122ed3a: Layer already exists
+da3ac26fdf0f: Layer already exists
+aa0fc249df10: Layer already exists
+f35bcec50d8c: Layer already exists
+989e799e6349: Layer already exists
+660f9a93104f: Layer already exists
+53998a5033c3: Layer already exists
+latest: digest: sha256:85263528fa6529c26f6096ea25ef8512cd0eb3a6a3f64a3f24ea885d35004566 size: 2406
+[Pipeline] sh
++ docker push ajith7353/backend:latest
+The push refers to repository [docker.io/ajith7353/backend]
+ca4fc9433445: Preparing
+c11831678fb5: Preparing
+45f34b597556: Preparing
+d6bad028b4e2: Preparing
+d2a991bcab4d: Preparing
+b624aa2d5ea2: Preparing
+d399c9dc306f: Preparing
+84f9fa179c1b: Preparing
+ce84ba212e49: Preparing
+e4dc8cd9ecc8: Preparing
+6428cc293366: Preparing
+2f7436e79a0b: Preparing
+b624aa2d5ea2: Waiting
+d399c9dc306f: Waiting
+84f9fa179c1b: Waiting
+ce84ba212e49: Waiting
+e4dc8cd9ecc8: Waiting
+6428cc293366: Waiting
+2f7436e79a0b: Waiting
+45f34b597556: Layer already exists
+d6bad028b4e2: Layer already exists
+d2a991bcab4d: Layer already exists
+c11831678fb5: Layer already exists
+ca4fc9433445: Layer already exists
+b624aa2d5ea2: Layer already exists
+d399c9dc306f: Layer already exists
+84f9fa179c1b: Layer already exists
+ce84ba212e49: Layer already exists
+e4dc8cd9ecc8: Layer already exists
+6428cc293366: Layer already exists
+2f7436e79a0b: Layer already exists
+latest: digest: sha256:39eb62dfd54e9a7a55f6adc1a8f8b064adcf9e7e278961947eb3a9e165ab1c99 size: 2837
+[Pipeline] }
+[Pipeline] // withDockerRegistry
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy on APK Server)
+[Pipeline] sh
++ docker pull ajith7353/frontend:latest
+latest: Pulling from ajith7353/frontend
+Digest: sha256:85263528fa6529c26f6096ea25ef8512cd0eb3a6a3f64a3f24ea885d35004566
+Status: Image is up to date for ajith7353/frontend:latest
+docker.io/ajith7353/frontend:latest
++ docker pull ajith7353/backend:latest
+latest: Pulling from ajith7353/backend
+Digest: sha256:39eb62dfd54e9a7a55f6adc1a8f8b064adcf9e7e278961947eb3a9e165ab1c99
+Status: Image is up to date for ajith7353/backend:latest
+docker.io/ajith7353/backend:latest
++ docker-compose down
+Stopping mongodb ... 
+Stopping mongodb ... done
+Removing backend ... 
+Removing mongodb ... 
+Removing backend ... done
+Removing mongodb ... done
+Removing network mern-ci-cd_dd_mean-network
++ docker-compose up -d
+Creating network "mern-ci-cd_dd_mean-network" with driver "bridge"
+Creating mongodb ... 
+Creating mongodb ... done
+Creating backend ... 
+Creating backend ... done
+Creating frontend ... 
+Creating frontend ... done
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] echo
+✅ Deployment Successful!
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
