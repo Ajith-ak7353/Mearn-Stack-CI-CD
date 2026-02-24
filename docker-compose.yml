@@ -13,7 +13,7 @@ services:
       - mean-network
 
   backend:
-    build: ajith7353/backend:latest
+    image: ajith7353/backend:latest
     container_name: backend
     restart: always
     ports:
@@ -27,7 +27,7 @@ services:
       - mean-network
 
   frontend:
-    build: ajith7353/frontend:latest
+    image: ajith7353/frontend:latest
     container_name: frontend
     restart: always
     ports:
