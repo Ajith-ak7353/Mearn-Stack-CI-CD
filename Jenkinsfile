@@ -58,10 +58,10 @@ withDockerRegistry(credentialsId: '9d20ed66-1fd5-4279-9693-344caa1db38a', url: '
 
     post {
         success {
-            echo "✅ Deployment Successful!"
+            echo " Deployment Successful!"
         }
         failure {
-            echo "❌ Deployment Failed!"
+            echo " Deployment Failed!"
         }
     }
 }
